@@ -42,7 +42,6 @@ void UART_1_INTR(void) interrupt 4{
     //---if TI do user's TI intr function---
 	if ( TI ){
         TI = 0;
-        //isBusy = 0;
         if ( 0 != drv_uart_1_ti_handler )	//if TI funcion is not NULL
             (*drv_uart_1_ti_handler)();
     }//end of if ( TI )
