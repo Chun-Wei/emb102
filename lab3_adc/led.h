@@ -1,5 +1,4 @@
 /**************************************************************************
-*                       (C)2014 CCJR-LAB                  				  *
 *               Department of Electronic Engineering,					  *
 * National Kaohsiung First University of Science and Technology           *      
 *-------------------------------------------------------------------------*
