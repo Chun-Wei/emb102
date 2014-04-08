@@ -15,7 +15,8 @@
 *   Parameter
 **************************************************************************/
 #define COMMAND_BUF_SIZE 20
-#define CMD_NUM	8
+#define CMD_NUM	9
+#define CMD_ERR	8
 #define CMD_D7	7
 #define CMD_D6	6
 #define CMD_D5	5

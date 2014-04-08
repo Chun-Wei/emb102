@@ -31,16 +31,27 @@ sbit BUTTON = P3 ^ 3; //define button at P3_3
 #define BUTTON_IS_PUSHED	0x0
 #define BUTTON_NON_PUSHED	0x1
 
+void Timer0Init(void)		//50ms@11.0592MHz
+{
+	TMOD &= 0xF0;		//Set timer work mode
+	TMOD |= 0x01;		//Set timer work mode
+	TL0 = 0x00;		//Initial timer value
+	TH0 = 0x3C;		//Initial timer value
+	TF0 = 0;		//Clear TF0 flag
+	TR0 = 1;		//Timer0 start run
+}
 
 void main(void){
 	unsigned char temp = 0;
 	unsigned char butCnt = 0;
 	unsigned char tempStr[20];
 	unsigned int preAdc,postAdc = 0;
+	unsigned char adCnt = 0;
 	
 	initialLed();
 	initialCommand();
 	initialAdc();
+	Timer0Init();
 	EA = 1;	//enable all interrupt
 	while(1){
 		//---Button checks----------------------------------
@@ -90,13 +101,20 @@ void main(void){
 		}
 		
 		//---Adc process----------------------------------
-		postAdc = getAdcData();
-		//postAdc &= 0x00ff;
-		if(preAdc!=postAdc){
-			preAdc = postAdc;
-			sprintf (tempStr,"ADC:%d\n",preAdc);
-			sentString(tempStr);
+		if(TF0){
+			adCnt++;
+			Timer0Init();
 		}
+		if(adCnt>=4){
+			postAdc = getAdcData();
+			if(preAdc!=postAdc){
+				preAdc = postAdc;
+				sprintf (tempStr,"ADC:%d\n",preAdc);
+				sentString(tempStr);
+			}
+			adCnt = 0;
+		}	
+		
 		
 	}//end of main-loop
 }//end of main
