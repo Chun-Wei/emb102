@@ -14,7 +14,9 @@
  **************************************************************************/
 #include <reg51.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "led.h"
+#include "lcd.h"
 #include "uart.h"
 #include "command.h"
 #include "MCP3201.h"
@@ -41,17 +43,20 @@ void Timer0Init(void)		//50ms@11.0592MHz
 	TR0 = 1;		//Timer0 start run
 }
 
+
 void main(void){
 	unsigned char temp = 0;
 	unsigned char butCnt = 0;
 	unsigned char tempStr[20];
 	unsigned int preAdc,postAdc = 0;
-	unsigned char adCnt = 0;
-	
+	unsigned char adCnt = 0,lcdCnt = 0;
+	unsigned char tempAdc[5];
 	initialLed();
+	initialLcd();
 	initialCommand();
 	initialAdc();
 	Timer0Init();
+	
 	EA = 1;	//enable all interrupt
 	while(1){
 		//---Button checks----------------------------------
@@ -103,6 +108,7 @@ void main(void){
 		//---Adc process----------------------------------
 		if(TF0){
 			adCnt++;
+			lcdCnt++;
 			Timer0Init();
 		}
 		if(adCnt>=4){
@@ -114,7 +120,24 @@ void main(void){
 			}
 			adCnt = 0;
 		}	
-		
-		
+		/*
+		if(lcdCnt>=20){
+			setCommand(0x80+0x00);
+			setData('A');
+			setData('D');
+			setData('C');
+			setData(':');
+			//itoa(postAdc,tempAdc,10);
+			//sprintf(tempAdc,"%d",postAdc);
+			/*
+			setData(tempAdc[0]);
+			setData(tempAdc[1]);
+			setData(tempAdc[2]);
+			setData(tempAdc[3]);
+			setData(tempAdc[4]);
+			
+			adCnt = 0;
+		}
+		*/
 	}//end of main-loop
 }//end of main
